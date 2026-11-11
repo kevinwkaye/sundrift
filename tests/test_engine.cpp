@@ -4,6 +4,7 @@
 #include <stdexcept>
 #include <cmath>
 #include <iostream>
+#include <string>
 #include <vector>
 
 #define CHECK(condition) do { if (!(condition)) throw std::runtime_error(     "Test failed: " #condition " at line " + std::to_string(__LINE__)); } while(false)
