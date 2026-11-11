@@ -180,7 +180,7 @@ SundriftAudioProcessorEditor::SundriftAudioProcessorEditor(SundriftAudioProcesso
     captureState.setColour(juce::Label::textColourId,dim);
     captureState.setFont(uiFont(10.f));
     addAndMakeVisible(captureState);
-    versionMark.setText("FLIP FELLA-STYLE / SND.01 / V0.1.2",juce::dontSendNotification);
+    versionMark.setText("FLIP FELLA-STYLE / SND.01 / V0.1.3",juce::dontSendNotification);
     versionMark.setColour(juce::Label::textColourId,faint);
     versionMark.setFont(uiFont(10.f));
     versionMark.setJustificationType(juce::Justification::centredRight);
