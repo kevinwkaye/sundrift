@@ -1,3 +1,5 @@
+> **CURRENT OWNER PRIORITY (11 NOV 2026):** The user likes Sundrift's sound. Focus next on **matching the existing Flip Fella VST UI** and **working with the existing shared MIDI footswitch/expression setup**. Read [Docs/CLAUDE_UI_MIDI_HANDOFF.md](Docs/CLAUDE_UI_MIDI_HANDOFF.md) before coding. This newer brief supersedes the sound-polish priority list below. Known validated crash-fix release: v0.1.3. Work only in the Sundrift repo and test the actual JUCE editor and MIDI routing.
+
 # Sundrift | Claude development handover
 
 Read this before modifying the project. The source of truth is **this repository**: https://github.com/kevinwkaye/sundrift on `main`, not `kevinwkaye/murmur`.
