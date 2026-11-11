@@ -129,7 +129,6 @@ void SplitFlapDisplay::paint(juce::Graphics& g) {
 SundriftAudioProcessorEditor::SundriftAudioProcessorEditor(SundriftAudioProcessor& p)
     :juce::AudioProcessorEditor(&p),processor(p){
     setLookAndFeel(&theme);
-    setSize(1140,742);
     for(int i=0;i<SundriftAudioProcessor::numKnobs;++i){
         auto& k=knobs[static_cast<size_t>(i)];
         k.slider.setSliderStyle(juce::Slider::RotaryHorizontalVerticalDrag);
@@ -193,6 +192,8 @@ SundriftAudioProcessorEditor::SundriftAudioProcessorEditor(SundriftAudioProcesso
         label->setFont(uiFont(11.f,true));
         addAndMakeVisible(*label);
     }
+    // setSize synchronously invokes resized(). All child components must exist first.
+    setSize(1140,742);
     syncPresetControls();
     startTimerHz(30);
 }
@@ -253,7 +254,9 @@ void SundriftAudioProcessorEditor::paint(juce::Graphics& g){
     g.drawText("ARTIST-INSPIRED TONE RECIPES. NOT AFFILIATED WITH THE ARTISTS.",32,707,680,16,juce::Justification::centredLeft);
 }
 void SundriftAudioProcessorEditor::resized(){
-    for(int i=0;i<4;++i)bandButtons[static_cast<size_t>(i)]->setBounds(29+i*273,155,263,54);
+    for(int i=0;i<4;++i)
+        if (auto* button = bandButtons[static_cast<size_t>(i)].get())
+            button->setBounds(29+i*273,155,263,54);
     nameDisplay.setBounds(37,226,465,78);
     presetLabel.setBounds(517,231,160,17);
     presetChoice.setBounds(517,250,216,36);
