@@ -70,4 +70,19 @@ if(SUNDRIFT_BUILD_TESTS)
   enable_testing()
   add_executable(sundrift_tests tests/test_engine.cpp)
   add_test(NAME DSP COMMAND sundrift_tests)
+
+  # Runs against the real JUCE processor/editor, catching GUI startup crashes
+  # that the dependency-free sound-engine tests cannot see.
+  if(WIN32)
+    add_executable(sundrift_host_smoke tests/host_smoke.cpp)
+    target_include_directories(sundrift_host_smoke PRIVATE
+      Source $<TARGET_PROPERTY:Sundrift,INCLUDE_DIRECTORIES>)
+    target_compile_definitions(sundrift_host_smoke PRIVATE
+      $<TARGET_PROPERTY:Sundrift,COMPILE_DEFINITIONS>)
+    target_compile_options(sundrift_host_smoke PRIVATE
+      $<TARGET_PROPERTY:Sundrift,COMPILE_OPTIONS>)
+    target_link_libraries(sundrift_host_smoke PRIVATE
+      Sundrift juce::juce_audio_utils juce::juce_dsp)
+    add_test(NAME HostLifecycle COMMAND sundrift_host_smoke)
+  endif()
 endif()
