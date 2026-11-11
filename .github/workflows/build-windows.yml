@@ -41,8 +41,14 @@ jobs:
           Expand-Archive pluginval.zip -DestinationPath pluginval
           $exe = Get-ChildItem -Path pluginval -Recurse -File -Filter "pluginval.exe" | Select-Object -First 1
           if (-not $exe) { throw "pluginval.exe was not found" }
-          & $exe.FullName --validate "$($bundle.FullName)" --strictness-level 5 --timeout-ms 600000
-          if ($LASTEXITCODE -ne 0) { throw "pluginval failed with exit code $LASTEXITCODE" }
+          # pluginval is a Windows GUI-subsystem exe; PowerShell's call operator may
+          # return before it exits, leaving $LASTEXITCODE unset. Wait explicitly.
+          $arguments = '--strictness-level 5 --timeout-ms 600000 --validate "' + $bundle.FullName + '"'
+          $proc = Start-Process -FilePath $exe.FullName -ArgumentList $arguments -Wait -PassThru -NoNewWindow `
+              -RedirectStandardOutput "pluginval-report.txt" -RedirectStandardError "pluginval-errors.txt"
+          Get-Content pluginval-report.txt -Tail 100
+          if (Test-Path pluginval-errors.txt) { Get-Content pluginval-errors.txt -Tail 30 }
+          if ($proc.ExitCode -ne 0) { throw "pluginval failed with exit code $($proc.ExitCode)" }
       - name: Package VST3
         shell: pwsh
         run: |
