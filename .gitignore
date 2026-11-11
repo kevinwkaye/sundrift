@@ -1,0 +1,33 @@
+# Build outputs
+/build/
+/build-*/
+/cmake-build-*/
+/out/
+/dist/
+/release/
+/.vs/
+CMakeUserPresets.json
+CMakeCache.txt
+CMakeFiles/
+*.obj
+*.o
+*.pdb
+*.dll
+*.exe
+*.vst3
+*.vst3/
+# Local audio, model captures and private test material
+*.wav
+*.mp3
+*.flac
+*.aiff
+*.aif
+*.nam
+*.zip
+*.tar.gz
+*.7z
+# Tooling
+__pycache__/
+*.pyc
+.DS_Store
+Thumbs.db
