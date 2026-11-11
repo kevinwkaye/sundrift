@@ -1,0 +1,7 @@
+cmake_minimum_required(VERSION 3.19)
+project(SundriftDSPTests LANGUAGES CXX)
+set(CMAKE_CXX_STANDARD 17)
+add_executable(sundrift_tests test_engine.cpp)
+add_executable(sundrift_demo ../tools/render_demo.cpp)
+enable_testing()
+add_test(NAME EngineSmoke COMMAND sundrift_tests)
