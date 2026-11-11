@@ -1,0 +1,47 @@
+name: Build Sundrift Windows VST3
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  dsp-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure standalone DSP tests
+        run: cmake -S tests -B build-dsp -DCMAKE_BUILD_TYPE=Release
+      - name: Build standalone DSP tests
+        run: cmake --build build-dsp --parallel 2
+      - name: Run DSP tests
+        run: ctest --test-dir build-dsp --output-on-failure
+
+  windows-vst3:
+    runs-on: windows-2022
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure with optional NAM A2 engine
+        shell: pwsh
+        run: cmake -S . -B build -G "Visual Studio 17 2022" -A x64 -DSUNDRIFT_WITH_NAM=ON -DSUNDRIFT_BUILD_TESTS=ON
+      - name: Build VST3 and DSP tests
+        shell: pwsh
+        run: cmake --build build --config Release --target Sundrift_VST3 sundrift_tests --parallel 4
+      - name: Run JUCE build's standalone DSP tests
+        shell: pwsh
+        run: ctest --test-dir build -C Release --output-on-failure
+      - name: Package VST3
+        shell: pwsh
+        run: |
+          $bundle = Get-ChildItem -Path build -Recurse -Directory -Filter "Sundrift.vst3" | Select-Object -First 1
+          if (-not $bundle) { throw "Sundrift.vst3 bundle not found" }
+          New-Item -ItemType Directory -Force -Path release | Out-Null
+          Copy-Item -LiteralPath $bundle.FullName -Destination "release/Sundrift.vst3" -Recurse
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Sundrift-Windows-x64-VST3
+          path: release/Sundrift.vst3
+          if-no-files-found: error
+          retention-days: 14
